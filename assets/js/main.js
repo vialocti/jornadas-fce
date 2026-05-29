@@ -2,6 +2,56 @@
 // Reemplazá esta URL por la de tu webhook real en N8N
 const N8N_WEBHOOK_URL = 'https://TU_INSTANCIA.n8n.io/webhook/jornadas-fce';
 
+// ─── Credencial ───
+let _lastCredData = null;
+
+function showCredential(data) {
+  _lastCredData = data;
+  if (!data._credId) {
+    data._credId = 'FCE2026-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+  }
+
+  document.getElementById('cred-name').textContent   = data.nombre + ' ' + data.apellido;
+  document.getElementById('cred-doc').textContent    = data.tipo_doc + ' · ' + data.num_doc;
+  document.getElementById('cred-nat').textContent    = 'Nacionalidad: ' + data.nacionalidad;
+  document.getElementById('cred-role').textContent   = data.rol;
+  document.getElementById('cred-dias').textContent   = data.dias;
+  document.getElementById('cred-id').textContent     = 'ID: ' + data._credId;
+
+  const qrBox = document.getElementById('credential-qr');
+  qrBox.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    new QRCode(qrBox, {
+      text: [
+        'JORNADAS FCE-UNCUYO 2026',
+        data.nombre + ' ' + data.apellido,
+        data.tipo_doc + ': ' + data.num_doc,
+        'Nac: ' + data.nacionalidad,
+        data._credId
+      ].join('\n'),
+      width: 110,
+      height: 110,
+      colorDark: '#003366',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }
+
+  document.getElementById('credential-modal').classList.add('open');
+}
+
+function closeCredential() {
+  document.getElementById('credential-modal').classList.remove('open');
+}
+
+function reopenCredential() {
+  if (_lastCredData) showCredential(_lastCredData);
+}
+
+function printCredential() {
+  window.print();
+}
+
 // ─── Tabs del cronograma ───
 function showDay(index) {
   document.querySelectorAll('.tab-panel').forEach((panel, i) => {
@@ -38,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     // Validación básica
-    const required = ['nombre', 'apellido', 'email', 'rol', 'dias'];
+    const required = ['nombre', 'apellido', 'email', 'tipo_doc', 'num_doc', 'nacionalidad', 'rol', 'dias'];
     let valid = true;
     for (const id of required) {
       const el = document.getElementById(id);
@@ -57,44 +107,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!valid) return;
 
-    // Deshabilitar botón durante el envío
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Enviando...';
     successMsg.style.display = 'none';
     errorMsg.style.display = 'none';
 
     const payload = {
-      nombre:      document.getElementById('nombre').value.trim(),
-      apellido:    document.getElementById('apellido').value.trim(),
-      email:       document.getElementById('email').value.trim(),
-      rol:         document.getElementById('rol').value,
-      dias:        document.getElementById('dias').value,
-      institucion: document.getElementById('institucion').value.trim(),
-      timestamp:   new Date().toISOString(),
-      origen:      'landing-jornadas-fce-uncuyo-2025'
+      nombre:       document.getElementById('nombre').value.trim(),
+      apellido:     document.getElementById('apellido').value.trim(),
+      email:        document.getElementById('email').value.trim(),
+      tipo_doc:     document.getElementById('tipo_doc').value,
+      num_doc:      document.getElementById('num_doc').value.trim(),
+      nacionalidad: document.getElementById('nacionalidad').value,
+      rol:          document.getElementById('rol').value,
+      dias:         document.getElementById('dias').value,
+      institucion:  document.getElementById('institucion').value.trim(),
+      timestamp:    new Date().toISOString(),
+      origen:       'landing-jornadas-fce-uncuyo-2025'
     };
 
-    try {
-      const res = await fetch(N8N_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+    // TODO: enviar payload al webhook cuando el registro esté listo
+    // const res = await fetch(N8N_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
-      if (res.ok) {
-        successMsg.style.display = 'block';
-        form.reset();
-        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        throw new Error('Response not ok: ' + res.status);
-      }
-    } catch (err) {
-      console.error('Error al enviar formulario:', err);
-      errorMsg.style.display = 'block';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar inscripción';
-    }
+    const credData = { ...payload };
+    successMsg.style.display = 'block';
+    form.reset();
+    successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    showCredential(credData);
   });
 
   // Limpiar estilos de error al escribir

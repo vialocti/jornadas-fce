@@ -234,6 +234,36 @@
             <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required />
           </div>
           <div class="form-group">
+            <label for="tipo_doc">Tipo de documento</label>
+            <select id="tipo_doc" name="tipo_doc" required>
+              <option value="">Seleccioná...</option>
+              <option>DNI</option>
+              <option>Pasaporte</option>
+              <option>Cédula de identidad</option>
+              <option>Libreta universitaria</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="num_doc">Número de documento</label>
+            <input type="text" id="num_doc" name="num_doc" placeholder="Ej. 30.123.456" required />
+          </div>
+          <div class="form-group">
+            <label for="nacionalidad">Nacionalidad</label>
+            <select id="nacionalidad" name="nacionalidad" required>
+              <option value="">Seleccioná...</option>
+              <option>Argentina</option>
+              <option>Boliviana</option>
+              <option>Brasileña</option>
+              <option>Chilena</option>
+              <option>Colombiana</option>
+              <option>Peruana</option>
+              <option>Paraguaya</option>
+              <option>Uruguaya</option>
+              <option>Venezolana</option>
+              <option>Otra</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label for="rol">Rol</label>
             <select id="rol" name="rol" required>
               <option value="">Seleccioná...</option>
@@ -266,7 +296,8 @@
 
         <div class="form-status success" id="form-success">
           <i class="ti ti-circle-check" aria-hidden="true"></i>
-          ¡Inscripción recibida! Te enviaremos la confirmación a tu correo electrónico a la brevedad.
+          ¡Inscripción recibida! Te enviaremos la confirmación a tu correo electrónico a la brevedad.<br>
+          <button class="btn-view-credential" onclick="reopenCredential()">Ver mi credencial</button>
         </div>
         <div class="form-status error" id="form-error">
           <i class="ti ti-alert-circle" aria-hidden="true"></i>
@@ -320,6 +351,50 @@
     <a href="#inicio">Volver al inicio ↑</a>
   </footer>
 
+  <!-- ─── Modal Credencial ─── -->
+  <div id="credential-modal" class="credential-overlay" role="dialog" aria-modal="true" aria-labelledby="cred-modal-title">
+    <div class="credential-wrapper">
+      <button class="credential-close" onclick="closeCredential()" aria-label="Cerrar">&times;</button>
+
+      <div id="credential-card" class="credential-card">
+        <div class="credential-head">
+          <span class="credential-head-brand">FCE · UNCUYO</span>
+          <span class="credential-head-badge">Credencial de asistente</span>
+        </div>
+
+        <div class="credential-event-band">
+          <h3 id="cred-modal-title">Jornadas Anuales de Ciencias Económicas 2026</h3>
+          <p>20, 21 y 22 de agosto &nbsp;·&nbsp; Aula Magna FCE &nbsp;·&nbsp; Mendoza</p>
+        </div>
+
+        <div class="credential-body">
+          <div class="credential-info">
+            <p class="credential-name" id="cred-name"></p>
+            <p class="credential-doc-line" id="cred-doc"></p>
+            <p class="credential-nat-line" id="cred-nat"></p>
+            <p class="credential-role-line" id="cred-role"></p>
+            <span class="credential-dias-line" id="cred-dias"></span>
+            <p class="credential-id-line" id="cred-id"></p>
+          </div>
+          <div class="credential-qr-box" id="credential-qr"></div>
+        </div>
+
+        <div class="credential-foot">
+          <p>Facultad de Ciencias Económicas &nbsp;·&nbsp; Universidad Nacional de Cuyo &nbsp;·&nbsp; Mendoza, Argentina</p>
+        </div>
+      </div>
+
+      <div class="credential-actions">
+        <button class="btn-credential-print" onclick="printCredential()">
+          <i class="ti ti-printer" aria-hidden="true"></i> Imprimir
+        </button>
+        <button class="btn-credential-close" onclick="closeCredential()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- JS propio -->
   <script src="assets/js/main.js"></script>
 
