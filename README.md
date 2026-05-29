@@ -2,7 +2,7 @@
 ## Facultad de Ciencias Económicas — UNCUYO · Mendoza, Argentina
 
 Landing page estática para las Jornadas Anuales de Ciencias Económicas 2025.
-**20, 21 y 22 de agosto de 2025 · Aula Magna FCE UNCUYO**
+**20, 21 y 22 de agosto de 2026 · Aula Magna FCE UNCUYO**
 
 ---
 
@@ -40,8 +40,8 @@ El formulario envía un `POST` con este JSON:
   "rol": "Estudiante de grado — FCE UNCUYO",
   "dias": "Los tres días (20, 21 y 22)",
   "institucion": "",
-  "timestamp": "2025-08-01T10:00:00.000Z",
-  "origen": "landing-jornadas-fce-uncuyo-2025"
+  "timestamp": "2026-08-01T10:00:00.000Z",
+  "origen": "landing-jornadas-fce-uncuyo-2026"
 }
 ```
 
